@@ -20,12 +20,39 @@ var Constructor = function()
     {
         return qsTr("Void");
     };
+    this.canBePlaced = function(x, y, map)
+    {
+        return map !== null && map !== undefined && map.onMap(x, y);
+    };
     this.getDefense = function()
     {
         return 0;
     };
+    this.installMovementBlock = function()
+    {
+        if (typeof MOVEMENTTABLE === "undefined" || MOVEMENTTABLE === null ||
+            MOVEMENTTABLE.__voidMovementBlockInstalled === true)
+        {
+            return;
+        }
+        var originalGetMovementpointsFromTable = MOVEMENTTABLE.getMovementpointsFromTable;
+        if (typeof originalGetMovementpointsFromTable !== "function")
+        {
+            throw new Error("MOVEMENTTABLE.getMovementpointsFromTable is unavailable");
+        }
+        MOVEMENTTABLE.getMovementpointsFromTable = function(terrain)
+        {
+            if (terrain !== null && terrain !== undefined && terrain.getID() === "VOID")
+            {
+                return -1;
+            }
+            return originalGetMovementpointsFromTable.apply(this, arguments);
+        };
+        MOVEMENTTABLE.__voidMovementBlockInstalled = true;
+    };
     this.loadBaseSprite = function(terrain, currentTerrainID, map)
     {
+        VOID.installMovementBlock();
         // fully transparent: only the map background is visible
         terrain.loadBaseSprite("void");
     };
