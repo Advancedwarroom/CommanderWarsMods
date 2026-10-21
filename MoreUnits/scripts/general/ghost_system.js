@@ -209,6 +209,11 @@ var GHOST_SYSTEM =
                             (building.getBuildingID().indexOf(GHOST_SYSTEM.GHOST_BUILDING_PREFIX) === 0 ||
                              building.getBuildingID().indexOf(GHOST_SYSTEM.BLACK_ARC_PREFIX) === 0))
                         {
+                            if (typeof MAP_MISSION !== "undefined" && MAP_MISSION !== null &&
+                                MAP_MISSION.isProtectedArc(building, map))
+                            {
+                                return false;
+                            }
                             var weaponID = (weaponIndex === 0) ? unit.getWeapon1ID() : unit.getWeapon2ID();
                             GHOST_SYSTEM.wrapWeapon(weaponID);
                             var weapon = (weaponID !== "") ? Global[weaponID] : null;

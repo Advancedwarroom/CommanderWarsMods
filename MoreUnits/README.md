@@ -121,7 +121,13 @@ unaffected. The AI will use it automatically, aiming at the most valuable
 enemy cluster.
 
 Placement: **any terrain** - it flies. When destroyed it flashes white, shakes the screen and leaves a 4x4 field of
-destroyed plains.
+destroyed plains. On the `Victory or death` map, the Black Arc cannot be attacked
+by any weapon, and its AI bombardment is fixed on the lower P1 factory tile.
+Destroy all four surrounding Ghost Cannons to make it self-destruct; its
+destruction clears the entire upper half of that map. Destroying the Black
+Crystal grants victory to the P1/P3 allied team. Air units (including modded
+helicopters) that reach the lower HQ gain a **Move** action: it teleports the
+unit to a random free tile in the upper-left area and transfers it to P3.
 ### Void
 A fully transparent terrain that shows only the map background. **No unit can
 enter it** - not even air units. The shared movement-table lookup treats it as

@@ -52,7 +52,7 @@ var Constructor = function()
                             if (unit.hasAmmo1() && unit.getWeapon1ID() !== "" &&
                                 unit.canAttackWithWeapon(0, actionTargetField.x, actionTargetField.y, x, y))
                             {
-                                if (ACTION_FIRE.muEnviromentDamageAt(unit.getWeapon1ID(), defTerrain) > 0)
+                                if (ACTION_FIRE.muEnviromentDamageAt(unit.getWeapon1ID(), defTerrain, map) > 0)
                                 {
                                     ret = true
                                     break;
@@ -61,7 +61,7 @@ var Constructor = function()
                             if (unit.hasAmmo2() && unit.getWeapon2ID() !== "" &&
                                 unit.canAttackWithWeapon(1, actionTargetField.x, actionTargetField.y, x, y))
                             {
-                                if (ACTION_FIRE.muEnviromentDamageAt(unit.getWeapon2ID(), defTerrain) > 0)
+                                if (ACTION_FIRE.muEnviromentDamageAt(unit.getWeapon2ID(), defTerrain, map) > 0)
                                 {
                                     ret = true
                                     break;
@@ -97,7 +97,7 @@ var Constructor = function()
     // vulnerable to air-capable weapons; the Black Arc takes 25% reduced
     // damage. The engine normally only looks at the terrain id, so check
     // the building on the target field first.
-    this.muEnviromentDamageAt = function(weaponID, defTerrain)
+    this.muEnviromentDamageAt = function(weaponID, defTerrain, map)
     {
         if (weaponID === "" || weaponID === null || weaponID === undefined ||
             defTerrain === null || defTerrain === undefined)
@@ -109,6 +109,11 @@ var Constructor = function()
             var building = defTerrain.getBuilding();
             if (building !== null && building.getHp() > 0)
             {
+                if (typeof MAP_MISSION !== "undefined" && MAP_MISSION !== null &&
+                    MAP_MISSION.isProtectedArc(building, map))
+                {
+                    return -1;
+                }
                 var skyDamage = GHOST_SYSTEM.getSkyBuildingDamage(building.getBuildingID(), weaponID);
                 if (skyDamage !== null)
                 {
@@ -121,7 +126,7 @@ var Constructor = function()
 
     this.calcEnviromentDamage = function(action, attacker, attackerWeapon, attackerPosition, targetField, enviroment, luckMode)
     {
-        var baseDamage = ACTION_FIRE.muEnviromentDamageAt(attackerWeapon, attacker.getMap().getTerrain(targetField.x, targetField.y));
+        var baseDamage = ACTION_FIRE.muEnviromentDamageAt(attackerWeapon, attacker.getMap().getTerrain(targetField.x, targetField.y), attacker.getMap());
         var offensive = 100 + attacker.getBonusOffensive(action, attackerPosition, null, targetField, false, luckMode);
         var attackerHp = attacker.getHpRounded() + attacker.getAttackHpBonus(attackerPosition);
         var damage = Global[attackerWeapon].calculateDamage(attackerHp, baseDamage, offensive, 100, 0, attacker.getMap());
@@ -933,12 +938,21 @@ var Constructor = function()
         {
             if ((defBuilding.getHp() <= 0))
             {
+                var missionCrystal = typeof MAP_MISSION !== "undefined" && MAP_MISSION !== null &&
+                                    MAP_MISSION.isMissionMap(map) &&
+                                    defBuilding.getBuildingID() === "ZCRYSTALL" &&
+                                    defBuilding.getX() === MAP_MISSION.CRYSTAL_X &&
+                                    defBuilding.getY() === MAP_MISSION.CRYSTAL_Y;
                 // achievements
                 if (player.getBaseGameInput().getAiType() === GameEnums.AiTypes_Human)
                 {
                     ACHIEVEMENT_KILL_NEUTRAL_BUILDING.killed(defBuilding.getBuildingID());
                 }
                 Global[defBuilding.getBuildingID()].onDestroyed(defBuilding, map);
+                if (missionCrystal)
+                {
+                    MAP_MISSION.markCrystalDestroyed(map);
+                }
             }
         }
         else if (ACTION_FIRE.postBuildingAnimationTerrain !== null &&

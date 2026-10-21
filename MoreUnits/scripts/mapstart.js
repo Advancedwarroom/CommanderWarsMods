@@ -19,5 +19,9 @@ var MapStart =
             MU_SYSTEM.registerTransportUnits();
             MU_SYSTEM.registerAirportUnit();
         }
+        if (typeof MAP_MISSION !== "undefined" && MAP_MISSION !== null)
+        {
+            MAP_MISSION.install(map);
+        }
     },
 };

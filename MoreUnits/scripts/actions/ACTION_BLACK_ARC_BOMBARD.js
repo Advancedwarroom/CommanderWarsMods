@@ -3,6 +3,23 @@ var Constructor = function()
     this.canBePerformed = function(action, map)
     {
         var building = action.getTargetBuilding();
+        if (building === null || building === undefined ||
+            building.getFireCount() < 1)
+        {
+            return false;
+        }
+        if (MAP_MISSION.isMissionMap(map))
+        {
+            var owner = building.getOwner();
+            var input = (owner !== null) ? owner.getBaseGameInput() : null;
+            if (!MAP_MISSION.isArcAlive(map) ||
+                !MAP_MISSION.isProtectedArc(building, map) ||
+                input === null ||
+                input.getAiType() === GameEnums.AiTypes_Human)
+            {
+                return false;
+            }
+        }
         if (building.getFireCount() >= 1)
         {
             return true;
@@ -30,8 +47,17 @@ var Constructor = function()
     };
     this.getStepData = function(action, data, map)
     {
-        // the whole map is a valid target - the Black Arc rains death anywhere
-        data.setAllFields(true);
+        if (MAP_MISSION.isMissionMap(map))
+        {
+            if (MAP_MISSION.isArcAlive(map))
+            {
+                data.addPoint(Qt.point(MAP_MISSION.FACTORY_X, MAP_MISSION.FACTORY_Y));
+            }
+        }
+        else
+        {
+            data.setAllFields(true);
+        }
         data.setShowZData(false);
         data.setColor("#C8FF0000");
     };
@@ -51,11 +77,25 @@ var Constructor = function()
     this.perform = function(action, map)
     {
         var building = action.getTargetBuilding();
-        building.setFireCount(building.getFireCount() - 1);
         action.startReading();
+        var targetX = action.readDataInt32();
+        var targetY = action.readDataInt32();
+        if (MAP_MISSION.isMissionMap(map) &&
+            (!MAP_MISSION.isArcAlive(map) ||
+             !MAP_MISSION.isProtectedArc(building, map) ||
+             building.getFireCount() < 1 ||
+             targetX !== MAP_MISSION.FACTORY_X ||
+             targetY !== MAP_MISSION.FACTORY_Y ||
+             building.getOwner() === null ||
+             building.getOwner().getBaseGameInput() === null ||
+             building.getOwner().getBaseGameInput().getAiType() === GameEnums.AiTypes_Human))
+        {
+            throw new Error("Invalid Black Arc bombardment");
+        }
+        building.setFireCount(building.getFireCount() - 1);
         ACTION_BLACK_ARC_BOMBARD.postAnimationBuilding = building;
-        ACTION_BLACK_ARC_BOMBARD.postAnimationTargetX = action.readDataInt32();
-        ACTION_BLACK_ARC_BOMBARD.postAnimationTargetY = action.readDataInt32();
+        ACTION_BLACK_ARC_BOMBARD.postAnimationTargetX = targetX;
+        ACTION_BLACK_ARC_BOMBARD.postAnimationTargetY = targetY;
 
         // launch animation at the fortress
         var offset = Global[building.getBuildingID()].getActionTargetOffset(building);
@@ -75,9 +115,16 @@ var Constructor = function()
     this.performPostAnimation = function(postAnimation, map)
     {
         var building = ACTION_BLACK_ARC_BOMBARD.postAnimationBuilding;
-        var firingOwner = (building !== null) ? building.getOwner() : null;
         var targetX = ACTION_BLACK_ARC_BOMBARD.postAnimationTargetX;
         var targetY = ACTION_BLACK_ARC_BOMBARD.postAnimationTargetY;
+        if (MAP_MISSION.isMissionMap(map) && !MAP_MISSION.isArcAlive(map))
+        {
+            ACTION_BLACK_ARC_BOMBARD.postAnimationBuilding = null;
+            ACTION_BLACK_ARC_BOMBARD.postAnimationTargetX = -1;
+            ACTION_BLACK_ARC_BOMBARD.postAnimationTargetY = -1;
+            return;
+        }
+        var firingOwner = (building !== null) ? building.getOwner() : null;
         var fields = globals.getCircle(0, 3);
         var size = fields.size();
         var specialDestruction = map.getGameRules().getSpecialDestruction();

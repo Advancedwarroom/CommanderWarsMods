@@ -104,6 +104,11 @@ var Constructor = function()
                 }
             }
         }
+        if (typeof MAP_MISSION !== "undefined" && MAP_MISSION !== null &&
+            MAP_MISSION.isMissionMap(map))
+        {
+            MAP_MISSION.clearUpperHalf(map);
+        }
     };
     this.getDescription = function()
     {

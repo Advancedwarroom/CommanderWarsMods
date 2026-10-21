@@ -66,6 +66,10 @@ var Constructor = function()
         animation.addSprite("explosion+land", -map.getImageSize() / 2, -map.getImageSize(), 0, 2);
         animation.addScreenshake(30, 0.95, 1000, 200);
         animation.setSound("explosion+land.wav");
+        if (typeof MAP_MISSION !== "undefined" && MAP_MISSION !== null)
+        {
+            MAP_MISSION.onGhostCannonDestroyed(building, map);
+        }
     };
     this.getShotAnimation = function(building, map)
     {
