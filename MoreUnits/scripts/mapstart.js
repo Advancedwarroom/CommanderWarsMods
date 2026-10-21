@@ -23,5 +23,9 @@ var MapStart =
         {
             MAP_MISSION.install(map);
         }
+        if (typeof MAP_MEANS_TO_END !== "undefined" && MAP_MEANS_TO_END !== null)
+        {
+            MAP_MEANS_TO_END.install(map);
+        }
     },
 };
