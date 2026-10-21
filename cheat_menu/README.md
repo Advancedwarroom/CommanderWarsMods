@@ -93,6 +93,11 @@ Pick a player → a CO slot (0/1, showing the current CO or an empty slot) →
 - **Empty power**.
 
 ### 8. Misc
+- **Player / CPU type setting**: choose a player and set its configured
+  control type to human or normal AI. The engine's scripting API exposes
+  `setControlType`, but that only changes the configured type; it does not
+  replace the active human/AI controller during a running game. The menu
+  therefore reports this as a setting change, not a live handover.
 - **Declare victory**: the chosen player wins (everyone else is instantly
   defeated).
 - **Declare defeat**: the chosen player is instantly defeated.

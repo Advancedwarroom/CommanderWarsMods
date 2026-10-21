@@ -42,6 +42,7 @@ var Constructor = function()
     this.CMD_MISC_WIN = "CHEAT_CMD_MISC_WIN";
     this.CMD_MISC_LOSE = "CHEAT_CMD_MISC_LOSE";
     this.CMD_MISC_STATS = "CHEAT_CMD_MISC_STATS";
+    this.CMD_MISC_CONTROLLER = "CHEAT_CMD_MISC_CONTROLLER";
 
     this.STEP_MENU = "MENU";
     this.STEP_FIELD = "FIELD";
@@ -461,6 +462,24 @@ var Constructor = function()
             options.push({id: String(i),
                           text: qsTr("Player ") + (i + 1)});
         }
+        return options;
+    };
+
+    this.controllerOptions = function(map, args)
+    {
+        var player = map.getPlayer(parseInt(args[0]));
+        var currentType = player.getControlType();
+        var humanType = GameEnums.AiTypes_Human;
+        var options = [
+            {id: "human",
+             text: qsTr("Player / human") +
+                   (currentType === humanType ?
+                    " (" + qsTr("configured") + ")" : "")},
+            {id: "cpu",
+             text: qsTr("CPU / normal AI") +
+                   (currentType !== humanType ?
+                    " (" + qsTr("configured") + ")" : "")}
+        ];
         return options;
     };
 
@@ -1416,6 +1435,28 @@ var Constructor = function()
             map.getPlayer(parseInt(args[0])).defeatPlayer(null, false);
             ACTION_CHEAT_MENU.print("player " + args[0] + " defeated");
         });
+    define(this.CMD_MISC_CONTROLLER, this.CAT_MISC,
+        function(map)
+        {
+            return qsTr("Set player / CPU type (not live)...");
+        },
+        [stepAllPlayers,
+         {type: this.STEP_MENU, options: function(map, args)
+         {
+             return ACTION_CHEAT_MENU.controllerOptions(map, args);
+         }}],
+        function(map, args)
+        {
+            var player = map.getPlayer(parseInt(args[0]));
+            var isHuman = args[1] === "human";
+            var controlType = isHuman ?
+                GameEnums.AiTypes_Human : GameEnums.AiTypes_Normal;
+            player.setControlType(controlType);
+            ACTION_CHEAT_MENU.print("player " + args[0] +
+                " controller setting=" + (isHuman ? "human" : "CPU") +
+                (isHuman ? "" : "/normal AI") +
+                "; active input unchanged (engine limitation)");
+        });
 
     this.getName = function()
     {
@@ -1423,7 +1464,7 @@ var Constructor = function()
     };
     this.getDescription = function()
     {
-        return qsTr("Cheat tools: change weather, toggle fog, replace terrain, adjust unit HP/fuel/ammo with sign and multiplier buttons, transform or spawn units, place buildings and cannons, adjust weapon HP, adjust funds, swap COs and fill or empty CO power, declare victory or defeat. Single-player use only.");
+        return qsTr("Cheat tools: change weather, toggle fog, replace terrain, adjust unit HP/fuel/ammo with sign and multiplier buttons, transform or spawn units, place buildings and cannons, adjust weapon HP, adjust funds, swap COs and fill or empty CO power, set a player's human/CPU control type, declare victory or defeat. The control type setting does not replace the active controller during a game. Single-player use only.");
     };
 };
 
