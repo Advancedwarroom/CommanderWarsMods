@@ -125,4 +125,6 @@ destroyed plains.
 ### Void
 A fully transparent terrain that shows only the map background. **No unit can
 enter it** - not even air units (no movement table contains it). Useful for
-carving out sky regions on Black Arc themed maps.
+carving out sky regions on Black Arc themed maps. It uses a distinct Black Arc
+icon in the editor/minimap so its placement is identifiable even though the
+terrain itself is transparent.

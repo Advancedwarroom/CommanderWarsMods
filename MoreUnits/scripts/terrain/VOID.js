@@ -31,7 +31,7 @@ var Constructor = function()
     };
     this.getMiniMapIcon = function()
     {
-        return "minimap_plains";
+        return "minimap_blackholebuilding";
     };
     this.getDescription = function()
     {
