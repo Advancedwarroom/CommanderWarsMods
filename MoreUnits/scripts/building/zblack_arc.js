@@ -107,7 +107,7 @@ var Constructor = function()
     };
     this.getDescription = function()
     {
-        return qsTr("The flying fortress Black Arc. Once per turn it can bombard any tile on the whole map: all units within range 3 of the impact lose 5 HP - friend and foe alike. Handle with care.");
+        return qsTr("The flying fortress Black Arc. Once per turn it can bombard any tile on the whole map: enemy units within range 3 of the impact lose 5 HP, while your own and allied units are unaffected.");
     };
 }
 

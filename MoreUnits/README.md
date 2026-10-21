@@ -115,10 +115,10 @@ A 4x4 fortress with a blinking two-frame animation. Unlike the original it
 **can be attacked and destroyed**: 100 HP, but only air units and anti-air
 weapons can touch it (same rule as the Ghost Cannon), and its armor reduces
 every hit to 75% damage. Once per turn it can
-**bombard any tile on the whole map**: every unit within range 3 of the target
-tile loses 5 HP — friend and foe alike, and units at 0 HP are destroyed.
-The AI will use it automatically, aiming at the most valuable enemy cluster
-(it does not avoid friendly fire — very Black Hole).
+**bombard any tile on the whole map**: enemy units within range 3 of the target
+tile lose 5 HP, and units at 0 HP are destroyed. Your own and allied units are
+unaffected. The AI will use it automatically, aiming at the most valuable
+enemy cluster.
 
 Placement: **any terrain** - it flies. When destroyed it flashes white, shakes the screen and leaves a 4x4 field of
 destroyed plains.
@@ -126,4 +126,3 @@ destroyed plains.
 A fully transparent terrain that shows only the map background. **No unit can
 enter it** - not even air units (no movement table contains it). Useful for
 carving out sky regions on Black Arc themed maps.
-

@@ -74,6 +74,8 @@ var Constructor = function()
 
     this.performPostAnimation = function(postAnimation, map)
     {
+        var building = ACTION_BLACK_ARC_BOMBARD.postAnimationBuilding;
+        var firingOwner = (building !== null) ? building.getOwner() : null;
         var targetX = ACTION_BLACK_ARC_BOMBARD.postAnimationTargetX;
         var targetY = ACTION_BLACK_ARC_BOMBARD.postAnimationTargetY;
         var fields = globals.getCircle(0, 3);
@@ -88,16 +90,19 @@ var Constructor = function()
                 var unit = map.getTerrain(x, y).getUnit();
                 if (unit !== null)
                 {
-                    // no mercy: friend and foe alike lose 5 hp
-                    var newHp = unit.getHpRounded() - 5;
-                    if (!specialDestruction && newHp <= 0.1)
+                    var targetOwner = unit.getOwner();
+                    if (firingOwner !== null && targetOwner !== null && firingOwner.isEnemy(targetOwner))
                     {
-                        newHp = 0.1;
-                    }
-                    unit.setHp(newHp);
-                    if (unit.getHp() <= 0)
-                    {
-                        unit.killUnit();
+                        var newHp = unit.getHpRounded() - 5;
+                        if (!specialDestruction && newHp <= 0.1)
+                        {
+                            newHp = 0.1;
+                        }
+                        unit.setHp(newHp);
+                        if (unit.getHp() <= 0)
+                        {
+                            unit.killUnit();
+                        }
                     }
                 }
             }
@@ -113,7 +118,7 @@ var Constructor = function()
     };
     this.getDescription = function()
     {
-        return qsTr("Orders the Black Arc to bombard any tile on the map. All units within range 3 of the impact lose 5 HP, including your own and allied units.");
+        return qsTr("Orders the Black Arc to bombard any tile on the map. Enemy units within range 3 of the impact lose 5 HP; your own and allied units are unaffected.");
     };
 }
 
