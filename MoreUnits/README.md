@@ -135,3 +135,25 @@ impassable, including for movement tables added by mods that use the standard
 lookup helper. Useful for carving out sky regions on Black Arc themed maps. It
 uses a distinct Black Arc icon in the editor/minimap so its placement is
 identifiable even though the terrain itself is transparent.
+
+## Attaching the mission scripts to maps
+
+The repository-root files [`Victory or death.js`](../Victory%20or%20death.js)
+and [`Means to end.js`](../Means%20to%20end.js) are Commander Wars
+`GameScript` entry points. The mission implementation they call is in the
+MoreUnits mod, so keep MoreUnits enabled when playing either map.
+
+To attach one in Commander Wars:
+
+1. Copy the matching `.map` and `.js` files into the game's `maps` folder.
+   Keep each script beside its map so the game can find it if the stored path
+   changes.
+2. Open the map in the map editor and open its map properties.
+3. Under **Script**, choose **Select File** and select the matching `.js`.
+4. Save the map. Keep the `.js` file beside it for reliable loading.
+5. Enable **MoreUnits** when starting the map.
+
+The JS file is selected as the map's game script; it is not pasted into the
+map editor. The helper files under `scripts/general/`, `scripts/actions/`,
+and `scripts/gamerules/` are mod implementation files and must stay in the
+MoreUnits folder structure.

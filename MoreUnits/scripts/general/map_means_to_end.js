@@ -2,11 +2,11 @@ var MAP_MEANS_TO_END =
 {
     MAP_VARIABLE: "MU_MEANS_TO_END_MISSION",
     VICTORY_RULE: "VICTORYRULE_MEANS_TO_END",
-    MAP_NAME_HINT: "Means to an end",
-    MAP_WIDTH: 18,
-    MAP_HEIGHT: 18,
-    UPPER_HALF_Y_MAX: 8,
-    LOWER_HALF_Y_MIN: 9,
+    MAP_NAME_HINT: "Means",
+    MAP_WIDTH: 19,
+    MAP_HEIGHT: 52,
+    UPPER_HALF_Y_MAX: 26,
+    LOWER_HALF_Y_MIN: 26,
     CYCLE_LENGTH: 6,
     LOCKED_TURNS: 5,
     CRYSTAL_BUILDING_ID: "ZCRYSTALL",
@@ -112,6 +112,10 @@ var MAP_MEANS_TO_END =
         {
             return 0;
         }
+        if (typeof map.getCurrentDay === "function")
+        {
+            return map.getCurrentDay();
+        }
         if (typeof map.getCurrentTurn === "function")
         {
             return map.getCurrentTurn();
@@ -199,17 +203,38 @@ var MAP_MEANS_TO_END =
 
     getWeakPointLocations: function(map)
     {
+        var weakPointIds = [
+            "ZGRAND_BOLT_EYE_LEFT",
+            "ZGRAND_BOLT_EYE_MIDDLE",
+            "ZGRAND_BOLT_EYE_RIGHT",
+            "ZGRAND_BOLT_EYE_LEFT_DESTROYED",
+            "ZGRAND_BOLT_EYE_MIDDLE_DESTROYED",
+            "ZGRAND_BOLT_EYE_RIGHT_DESTROYED"
+        ];
         var result = [];
         for (var x = 0; x < map.getMapWidth(); x++)
         {
             for (var y = 0; y < map.getMapHeight(); y++)
             {
                 var building = MAP_MEANS_TO_END.getBuilding(map, x, y);
-                if (building !== null &&
-                    typeof building.getBuildingID === "function" &&
-                    building.getBuildingID().indexOf(MAP_MEANS_TO_END.GRAND_BOLT_PREFIX) === 0)
+                if (building === null ||
+                    typeof building.getBuildingID !== "function")
                 {
-                    result.push({ x: x, y: y, building: building });
+                    continue;
+                }
+                var buildingId = building.getBuildingID();
+                for (var i = 0; i < weakPointIds.length; i++)
+                {
+                    if (buildingId === weakPointIds[i])
+                    {
+                        result.push({
+                            x: x,
+                            y: y,
+                            building: building,
+                            destroyed: buildingId.indexOf("_DESTROYED") >= 0
+                        });
+                        break;
+                    }
                 }
             }
         }
@@ -265,7 +290,9 @@ var MAP_MEANS_TO_END =
         }
         for (var i = 0; i < weakPoints.length; i++)
         {
-            if (weakPoints[i].building !== null && weakPoints[i].building.getHp() > 0)
+            if (!weakPoints[i].destroyed &&
+                weakPoints[i].building !== null &&
+                weakPoints[i].building.getHp() > 0)
             {
                 return false;
             }
@@ -340,7 +367,7 @@ var MAP_MEANS_TO_END =
                 }
                 if (unit !== null && unit !== undefined)
                 {
-                    unit.setHp(0);
+                    unit.killUnit();
                 }
             }
         }
@@ -353,27 +380,53 @@ var MAP_MEANS_TO_END =
         {
             return destinations;
         }
+        var hq = null;
         for (var x = 0; x < map.getMapWidth(); x++)
         {
             for (var y = 0; y < MAP_MEANS_TO_END.UPPER_HALF_Y_MAX && y < map.getMapHeight(); y++)
             {
                 var terrain = map.getTerrain(x, y);
-                if (terrain !== null && terrain !== undefined)
+                if (terrain === null || terrain === undefined)
                 {
-                    var building = terrain.getBuilding();
-                    var unit = terrain.getUnit();
-                    if (building !== null && building !== undefined &&
-                        building.getOwner() !== null &&
-                        building.getOwner().getPlayerID() === 2 &&
-                        unit === null)
-                    {
-                        destinations.push({ x: x, y: y });
-                    }
-                    else if (unit === null && building === null &&
-                             x >= 0 && y >= 0)
-                    {
-                        destinations.push({ x: x, y: y });
-                    }
+                    continue;
+                }
+                var building = terrain.getBuilding();
+                if (building !== null && building !== undefined &&
+                    building.getBuildingID() === "HQ" &&
+                    building.getOwner() !== null &&
+                    building.getOwner().getPlayerID() === 2)
+                {
+                    hq = { x: x, y: y, unit: terrain.getUnit() };
+                    break;
+                }
+            }
+            if (hq !== null)
+            {
+                break;
+            }
+        }
+        if (hq !== null && hq.unit === null)
+        {
+            return [{ x: hq.x, y: hq.y }];
+        }
+        for (var x2 = 0; x2 < map.getMapWidth(); x2++)
+        {
+            for (var y2 = 0; y2 < MAP_MEANS_TO_END.UPPER_HALF_Y_MAX &&
+                 y2 < map.getMapHeight(); y2++)
+            {
+                var otherTerrain = map.getTerrain(x2, y2);
+                if (otherTerrain === null || otherTerrain === undefined ||
+                    otherTerrain.getUnit() !== null)
+                {
+                    continue;
+                }
+                var otherBuilding = otherTerrain.getBuilding();
+                if (otherBuilding !== null && otherBuilding !== undefined &&
+                    otherBuilding.getBuildingID() !== "HQ" &&
+                    otherBuilding.getOwner() !== null &&
+                    otherBuilding.getOwner().getPlayerID() === 2)
+                {
+                    destinations.push({ x: x2, y: y2 });
                 }
             }
         }
@@ -398,14 +451,31 @@ var MAP_MEANS_TO_END =
         var state = MAP_MEANS_TO_END.getTurnCycleState(map);
         if (state.turn >= 26)
         {
-            var playerTwo = map.getPlayer(1);
-            if (playerTwo !== null)
+            var variables = map.getVariables();
+            var timeLimit = variables.getVariable("MU_MEANS_TO_END_TIME_LIMIT");
+            if (timeLimit !== null && timeLimit.readDataBool())
             {
-                playerTwo.setDefeated(false);
+                return;
             }
-            if (map.getGameRules !== undefined && map.getGameRules() !== null)
+            if (timeLimit === null)
             {
-                map.getGameRules().checkVictory();
+                timeLimit = variables.createVariable("MU_MEANS_TO_END_TIME_LIMIT");
+            }
+            timeLimit.writeDataBool(true);
+            var playerOne = map.getPlayer(0);
+            var playerThree = map.getPlayer(2);
+            if (playerOne !== null && !playerOne.getIsDefeated())
+            {
+                playerOne.defeatPlayer(null, false);
+            }
+            if (playerThree !== null && !playerThree.getIsDefeated())
+            {
+                playerThree.defeatPlayer(null, false);
+            }
+            var rules = map.getGameRules();
+            if (rules !== null && rules !== undefined)
+            {
+                rules.checkVictory();
             }
         }
     },
