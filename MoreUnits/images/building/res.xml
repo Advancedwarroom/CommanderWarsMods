@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<resources>
+    <set path = "mods/MoreUnits/images/building" />
+    <atlas linearFilter="false">
+        <!-- The Grand Bolt - Main building sprites (Full versions) -->
+        <image file="THE_GRAND_BOLT_DOWN_FULL.png" />
+        <image file="THE_GRAND_BOLT_DOWN_FULL+mask.png" />
+        <image file="THE_GRAND_BOLT_UP_FULL.png" />
+        <image file="THE_GRAND_BOLT_UP_FULL+mask.png" />
+        <image file="THE_GRAND_BOLT_LEFT_FULL.png" />
+        <image file="THE_GRAND_BOLT_LEFT_FULL+mask.png" />
+        <image file="THE_GRAND_BOLT_RIGHT_FULL.png" />
+        <image file="THE_GRAND_BOLT_RIGHT_FULL+mask.png" />
+        <!-- The Grand Bolt - Main building sprites (Broken versions) -->
+        <image file="THE_GRAND_BOLT_DOWN_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_DOWN_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_UP_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_UP_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_LEFT_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_LEFT_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_RIGHT_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_RIGHT_BROKEN+mask.png" />
+        <!-- The Mainly Bolt - Core building sprites (Broken versions used as base) -->
+        <image file="THE_GRAND_BOLT_DOWN_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_DOWN_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_UP_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_UP_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_LEFT_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_LEFT_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_RIGHT_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_RIGHT_BROKEN+mask.png" />
+        <!-- The Grand Bolt - Weak Point sprites (Down) -->
+        <image file="THE_GRAND_BOLT_WP_DOWN_0.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_0+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_0_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_0_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_1.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_1+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_1_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_1_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_2.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_2+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_2_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_DOWN_2_BROKEN+mask.png" />
+        <!-- The Grand Bolt - Weak Point sprites (Up) -->
+        <image file="THE_GRAND_BOLT_WP_UP_0.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_0+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_0_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_0_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_1.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_1+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_1_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_1_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_2.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_2+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_2_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_UP_2_BROKEN+mask.png" />
+        <!-- The Grand Bolt - Weak Point sprites (Left) -->
+        <image file="THE_GRAND_BOLT_WP_LEFT_0.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_0+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_0_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_0_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_1.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_1+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_1_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_1_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_2.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_2+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_2_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_LEFT_2_BROKEN+mask.png" />
+        <!-- The Grand Bolt - Weak Point sprites (Right) -->
+        <image file="THE_GRAND_BOLT_WP_RIGHT_0.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_0+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_0_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_0_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_1.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_1+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_1_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_1_BROKEN+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_2.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_2+mask.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_2_BROKEN.png" />
+        <image file="THE_GRAND_BOLT_WP_RIGHT_2_BROKEN+mask.png" />
+        <!-- Ghost Cannon - four facings -->
+        <image file="ghost+cannon+N.png" />
+        <image file="ghost+cannon+S.png" />
+        <image file="ghost+cannon+E.png" />
+        <image file="ghost+cannon+W.png" />
+        <!-- Black Arc - 2 frame blink animation -->
+        <image file="black+arc.png" cols = "2" />
+    </atlas>
+</resources>

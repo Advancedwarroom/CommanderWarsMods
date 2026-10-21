@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<resources>
+    <set path = "mods/MoreUnits/images/battleanimations/" />
+    <atlas linearFilter="false">
+        <image file="MU_LARGEMISSILE.png" />
+        <image file="MU_LARGEMISSILE+mask.png" />
+        <image file="MU_LARGEMISSILE+walk+mask.png" />
+        <image file="MU_BACKTRACKCAR.png" />
+        <image file="MU_BACKTRACKCAR+mask.png" />
+        <image file="MU_BACKTRACKCAR+walk+mask.png" />
+        <image file="MU_EMPOWER_TERRAIN_EDITOR.png" />
+        <image file="MU_EMPOWER_TERRAIN_EDITOR+mask.png" />
+        <image file="MU_WEAPON_CONSTRUCTOR+mask.png" />
+        <image file="MU_PIPEBIN.png" />
+        <image file="MU_PIPEBIN+mask.png" />
+        <image file="MU_PIPETHINKER+mask.png" />
+        <image file="MU_SPITOR+mask.png" />
+        <image file="THE_GREAT_OWL+mask.png" />
+        <image file="THE_GREAT_OWL.png" />
+        <image file="THE_BLACK_ONYX+mask.png" />
+        <image file="THE_BLACK_ONYX.png" />
+    </atlas>
+</resources>

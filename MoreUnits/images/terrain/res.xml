@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<resources>
+    <set path = "mods/MoreUnits/images/terrain/" />
+    <atlas linearFilter="false">
+        <image file="ghost+platform.png" />
+        <image file="void.png" />
+    </atlas>
+</resources>
