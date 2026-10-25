@@ -42,6 +42,12 @@ var Constructor = function()
     {
         return qsTr("Shotgun Tank");
     };
+    this.getUnitDamageID = function(unit)
+    {
+        // alias to the light tank so every existing weapon table resolves
+        // damage against us (otherwise no weapon can attack this unit)
+        return "LIGHT_TANK";
+    };
     this.canMoveAndFire = function()
     {
         return true;
