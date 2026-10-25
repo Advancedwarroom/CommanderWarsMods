@@ -21,5 +21,9 @@
         <image file="THE_BLACK_ONYX+mask.png" />
         <image file="THE_BLACK_ONYX.png" />
         <image file="THE_BLACK_ONYX+walk+mask.png" />
+        <image file="SHOTGUN_TANK+mask.png" />
+        <image file="SHOTGUN_TANK+walk+mask.png" />
+        <image file="SHOTGUN_TANK.png" />
+        <image file="SHOTGUN_TANK+walk.png" />
     </atlas>
 </resources>
