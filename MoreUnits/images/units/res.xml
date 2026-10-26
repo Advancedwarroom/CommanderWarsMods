@@ -25,5 +25,7 @@
         <image file="SHOTGUN_TANK+walk+mask.png" cols = "3" rows = "4" />
         <image file="LASER_TANK+mask.png" cols = "4" />
         <image file="LASER_TANK+walk+mask.png" cols = "3" rows = "4" />
+        <image file="THE_BLACK_LEVIATHAN+mask.png" cols = "4" />
+        <image file="THE_BLACK_LEVIATHAN+walk+mask.png" cols = "3" rows = "4" />
     </atlas>
 </resources>
