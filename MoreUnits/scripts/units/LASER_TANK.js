@@ -78,6 +78,19 @@ var Constructor = function()
     // ================================================================
     this.postBattleActions = function(unit, damage, otherUnit, gotAttacked, weapon, action, map)
     {
+        // chain the global MU armor-funds tracker (MU_ARMOR_SYSTEM)
+        try
+        {
+            if (typeof UNIT.postBattleActions === "function")
+            {
+                UNIT.postBattleActions.call(this, unit, damage, otherUnit, gotAttacked, weapon, action, map);
+            }
+        }
+        catch (muChainError)
+        {
+            // never let tracking break the battle
+        }
+
         try
         {
             if (gotAttacked) { return; }
