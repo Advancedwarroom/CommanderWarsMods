@@ -54,7 +54,7 @@ var Constructor = function()
     };
     this.getDescription = function()
     {
-        return qsTr("Shotgun blast: the target tile plus the two tiles flanking it take full attack damage. Splash hits units and HP-buildings regardless of allegiance, but only the main battle shows an animation. Each attack costs a single shell.");
+        return qsTr("Shotgun blast: the target tile plus the two tiles flanking it take full attack damage. Splash hits units and HP-buildings regardless of allegiance, splash victims are treated like indirect-fire targets and never counterattack, and only the main battle shows an animation. Each attack costs a single shell.");
     };
     this.getUnitType = function()
     {
@@ -70,104 +70,116 @@ var Constructor = function()
     // flanking the target tile (perpendicular to the firing direction).
     //   units    -> ACTION_FIRE.calcDamage (full combat calculation)
     //   buildings-> ACTION_FIRE.calcEnviromentDamage (env damage table)
-    // Counterattacks of splash victims follow the engine's own rule
-    // (direct-fire only, Manhattan distance 1; indirect never counters).
-    // Also triggers when counterattacking: the blast sprays the attacker.
+    // Splash victims follow the indirect-fire rule: they never
+    // counterattack. Friendly fire is on. Only the main battle shows
+    // an animation and only the main battle consumes ammo.
     // ================================================================
-    this.postBattleActions = function(unit, damage, otherUnit, gotAttacked, weapon, action)
+    this.postBattleActions = function(unit, damage, otherUnit, gotAttacked, weapon, action, map)
     {
-        if (gotAttacked) { return; }
-        if (weapon !== 0 && weapon !== 1) { return; }
-        if (action === null) { return; }
-
-        var map = unit.getOwner().getMap();
-
-        // splash centre: the battled unit's tile; falls back to the action
-        // target tile when attacking buildings/terrain
-        var tx, ty;
-        if (otherUnit !== null)
+        try
         {
-            tx = otherUnit.getX();
-            ty = otherUnit.getY();
-        }
-        else
-        {
-            var t = action.getActionTarget();
-            tx = t.x;
-            ty = t.y;
-        }
-        var ux = unit.getX(), uy = unit.getY();
-        var dx = tx - ux, dy = ty - uy;
-        if (dx === 0 && dy === 0) { return; }
+            if (gotAttacked) { return; }
+            if (weapon !== 0 && weapon !== 1) { return; }
+            if (unit === null || unit === undefined) { return; }
+            if (action === null || action === undefined) { return; }
 
-        // the two tiles flanking the target, perpendicular to fire direction
-        var flanks = [[-dy, dx], [dy, -dx]];
-        var sgPos = Qt.point(ux, uy);
-        var sgHp  = unit.getHp();
-        var gunID = unit.getWeapon1ID();
-
-        for (var i = 0; i < flanks.length; i++)
-        {
-            var fx = tx + flanks[i][0], fy = ty + flanks[i][1];
-            if (map.onMap(fx, fy) === false) { continue; }
-
-            var terrain = map.getTerrain(fx, fy);
-            var victim  = terrain.getUnit();
-            var bld     = terrain.getBuilding();
-
-            // ---- units: full attack calculation, friend and foe alike ----
-            if (victim !== null)
+            if (map === null || map === undefined)
             {
-                var vPos = Qt.point(fx, fy);
-                var dmg = ACTION_FIRE.calcDamage(action, unit, gunID, sgPos, sgHp,
-                                                 victim, vPos, false,
-                                                 GameEnums.LuckDamageMode_On, false);
-                if (dmg > 0)
-                {
-                    victim.setHp(victim.getHp() - dmg / 10.0);
-                }
-                // counterattack: engine rules (direct + distance 1)
-                if (victim.getHp() > 0 &&
-                    victim.canCounterAttack(action, vPos, unit, sgPos, GameEnums.LuckDamageMode_On))
-                {
-                    var cw = victim.getWeapon1ID();
-                    var cd = ACTION_FIRE.calcDamage(action, victim, cw, vPos, victim.getHp(),
-                                                    unit, sgPos, true,
-                                                    GameEnums.LuckDamageMode_On, false);
-                    if (cd > 0)
-                    {
-                        unit.setHp(unit.getHp() - cd / 10.0);
-                    }
-                }
-                if (victim.getHp() <= 0)
-                {
-                    victim.killUnit();
-                }
+                map = unit.getMap();
             }
+            if (map === null || map === undefined) { return; }
 
-            // ---- HP buildings (MiniCannon / BlackCannon etc.) ----
-            if (bld !== null && bld.getHp() > 0 && bld.getIsAttackable(fx, fy))
+            // splash centre: the battled unit's tile; when attacking a
+            // building/terrain directly, otherUnit is null and the fire
+            // action's recorded target tile is the splash centre instead
+            // (getActionTarget points at our own post-move tile there)
+            var tx, ty;
+            if (otherUnit !== null && otherUnit !== undefined)
             {
-                var bdmg = ACTION_FIRE.calcEnviromentDamage(action, unit, gunID, sgPos,
-                                                            Qt.point(fx, fy), terrain.getID(),
-                                                            GameEnums.LuckDamageMode_On);
-                if (bdmg > 0)
+                tx = otherUnit.getX();
+                ty = otherUnit.getY();
+            }
+            else if (typeof ACTION_FIRE !== "undefined" && ACTION_FIRE !== null &&
+                     map.onMap(ACTION_FIRE.postAnimationTargetX, ACTION_FIRE.postAnimationTargetY))
+            {
+                tx = ACTION_FIRE.postAnimationTargetX;
+                ty = ACTION_FIRE.postAnimationTargetY;
+            }
+            else
+            {
+                return;
+            }
+            var ux = unit.getX(), uy = unit.getY();
+            var dx = tx - ux, dy = ty - uy;
+            if (dx === 0 && dy === 0) { return; }
+
+            // splash uses the weapon that actually fired (gun or mg)
+            var splashWeaponID = (weapon === 0) ? unit.getWeapon1ID() : unit.getWeapon2ID();
+            if (splashWeaponID === "") { return; }
+
+            // the two tiles flanking the target, perpendicular to fire direction
+            var flanks = [[-dy, dx], [dy, -dx]];
+            var sgPos = Qt.point(ux, uy);
+            var sgHp  = unit.getHp();
+
+            for (var i = 0; i < flanks.length; i++)
+            {
+                var fx = tx + flanks[i][0], fy = ty + flanks[i][1];
+                try
                 {
-                    bld.setHp(bld.getHp() - bdmg);
-                    if (bld.getHp() <= 0)
+                    if (map.onMap(fx, fy) === false) { continue; }
+
+                    var terrain = map.getTerrain(fx, fy);
+                    var victim  = terrain.getUnit();
+                    var bld     = terrain.getBuilding();
+
+                    // ---- units: full attack calculation, friend and foe alike;
+                    //      indirect-fire rule: splash victims never counter ----
+                    if (victim !== null && victim !== undefined)
                     {
-                        var bscript = Global[bld.getBuildingID()];
-                        if (typeof bscript.onDestroyed === "function")
+                        var vPos = Qt.point(fx, fy);
+                        var dmg = ACTION_FIRE.calcDamage(action, unit, splashWeaponID, sgPos, sgHp,
+                                                         victim, vPos, false,
+                                                         GameEnums.LuckDamageMode_On, false);
+                        if (dmg > 0)
                         {
-                            bscript.onDestroyed(bld, map);
+                            victim.setHp(victim.getHp() - dmg / 10.0);
+                        }
+                        if (victim.getHp() <= 0)
+                        {
+                            victim.killUnit();
+                        }
+                    }
+
+                    // ---- HP buildings (MiniCannon / BlackCannon etc.), no animation ----
+                    if (bld !== null && bld !== undefined && bld.getHp() > 0 && bld.getIsAttackable(fx, fy))
+                    {
+                        var bdmg = ACTION_FIRE.calcEnviromentDamage(action, unit, splashWeaponID, sgPos,
+                                                                    Qt.point(fx, fy), terrain.getID(),
+                                                                    GameEnums.LuckDamageMode_On);
+                        if (bdmg > 0)
+                        {
+                            bld.setHp(bld.getHp() - bdmg);
+                            if (bld.getHp() <= 0)
+                            {
+                                var bscript = Global[bld.getBuildingID()];
+                                if (typeof bscript.onDestroyed === "function")
+                                {
+                                    bscript.onDestroyed(bld, map);
+                                }
+                            }
                         }
                     }
                 }
+                catch (tileError)
+                {
+                    // one bad tile must never kill the whole blast
+                }
             }
         }
-        if (unit.getHp() <= 0)
+        catch (e)
         {
-            unit.killUnit();
+            // never let the shotgun break the engine's battle flow
         }
     };
 };

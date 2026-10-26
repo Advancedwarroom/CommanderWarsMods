@@ -21,7 +21,7 @@
         <image file="THE_BLACK_ONYX+mask.png" />
         <image file="THE_BLACK_ONYX.png" />
         <image file="THE_BLACK_ONYX+walk+mask.png" />
-        <image file="SHOTGUN_TANK+mask.png" />
-        <image file="SHOTGUN_TANK+walk+mask.png" />
+        <image file="SHOTGUN_TANK+mask.png" cols = "4" />
+        <image file="SHOTGUN_TANK+walk+mask.png" cols = "3" rows = "4" />
     </atlas>
 </resources>
