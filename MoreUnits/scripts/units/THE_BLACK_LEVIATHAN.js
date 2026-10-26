@@ -26,7 +26,11 @@ var Constructor = function()
     };
     this.getMovementType = function()
     {
-        return "MOVE_LEVIATHAN";
+        // MOVE_SHIP is used because the engine does not load custom
+        // movement tables from mods (see MovementTableManager): sea,
+        // lake, beach, harbour and fog cost 1 (1 MP -> one tile per turn),
+        // rough sea and reefs stay out of reach at cost 2
+        return "MOVE_SHIP";
     };
     this.getBaseCost = function()
     {
