@@ -119,8 +119,10 @@ var Constructor = function()
             var beamWeaponID = (weapon === 0) ? unit.getWeapon1ID() : unit.getWeapon2ID();
             if (beamWeaponID === "") { return; }
 
-            // the beam travels two more tiles straight along (dx, dy)
-            var beamTiles = [[tx, ty], [tx + dx, ty + dy], [tx + 2 * dx, ty + 2 * dy]];
+            // the beam travels two more tiles straight along (dx, dy);
+            // the target tile itself is excluded - it already took the
+            // regular battle damage, hitting it again would double it
+            var beamTiles = [[tx + dx, ty + dy], [tx + 2 * dx, ty + 2 * dy]];
             var sgPos = Qt.point(ux, uy);
             var sgHp  = unit.getHp();
 
@@ -129,9 +131,10 @@ var Constructor = function()
             {
                 // rotation: sprite points east at 0 degrees, screen y is down
                 var beamRotation = Math.atan2(dy, dx) * 180.0 / Math.PI;
-                for (var b = 0; b < beamTiles.length; b++)
+                var visualTiles = [[tx, ty], [tx + dx, ty + dy], [tx + 2 * dx, ty + 2 * dy]];
+                for (var b = 0; b < visualTiles.length; b++)
                 {
-                    var bx = beamTiles[b][0], by = beamTiles[b][1];
+                    var bx = visualTiles[b][0], by = visualTiles[b][1];
                     if (map.onMap(bx, by) === false) { break; }
                     var beamAnim = GameAnimationFactory.createAnimation(map, bx, by);
                     if (b === 0)
