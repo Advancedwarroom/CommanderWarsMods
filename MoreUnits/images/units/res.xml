@@ -29,5 +29,7 @@
         <image file="THE_BLACK_LEVIATHAN+walk+mask.png" cols = "3" rows = "4" />
         <image file="MATRIX_CAR+mask.png" cols = "4" />
         <image file="MATRIX_CAR+walk+mask.png" cols = "3" rows = "4" />
+        <image file="MICROWAVE_VEHICLE+mask.png" cols = "4" />
+        <image file="MICROWAVE_VEHICLE+walk+mask.png" cols = "3" rows = "4" />
     </atlas>
 </resources>
