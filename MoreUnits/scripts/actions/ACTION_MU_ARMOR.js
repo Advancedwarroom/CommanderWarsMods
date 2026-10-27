@@ -82,23 +82,20 @@ var Constructor = function()
     {
         try
         {
-            action.startReading();
-            var x = action.readDataInt32();
-            var y = action.readDataInt32();
-            ACTION_MU_ARMOR.targetX = x;
-            ACTION_MU_ARMOR.targetY = y;
-            ACTION_MU_ARMOR.postAnimationUnit = action.getTargetUnit();
+            // ACTION_MU_SPIT pattern: no createActionAnimation, no setAnimation;
+            // the unit's walking animation carries the end-of-animation callback
             var unit = action.getTargetUnit();
-            var animation = GameAnimationFactory.createActionAnimation(map, unit, action);
-            animation.writeDataInt32(unit.getX());
-            animation.writeDataInt32(unit.getY());
+            ACTION_MU_ARMOR.postAnimationUnit = unit;
+            action.startReading();
+            ACTION_MU_ARMOR.targetX = action.readDataInt32();
+            ACTION_MU_ARMOR.targetY = action.readDataInt32();
+            var animation = Global[unit.getUnitID()].doWalkingAnimation(action, map);
             animation.setEndOfAnimationCall("ACTION_MU_ARMOR", "performPostAnimation");
-            action.setAnimation(animation);
             Global[unit.getUnitID()].moveUnit(unit, action, map);
         }
         catch (e)
         {
-            // never let the armor break the engine's action flow
+            // never let the action break the engine's action flow
         }
     };
 
@@ -106,9 +103,6 @@ var Constructor = function()
     {
         try
         {
-            postAnimation.startReading();
-            var ux = postAnimation.readDataInt32();
-            var uy = postAnimation.readDataInt32();
             var unit = ACTION_MU_ARMOR.postAnimationUnit;
             if (unit !== null && unit !== undefined)
             {
