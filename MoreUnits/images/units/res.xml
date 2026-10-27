@@ -33,5 +33,7 @@
         <image file="MICROWAVE_VEHICLE+walk+mask.png" cols = "3" rows = "4" />
         <image file="ARMORED_TRUCK+mask.png" />
         <image file="ARMORED_TRUCK+walk+mask.png" cols = "3" rows = "4" />
+        <image file="BLACK_HITTER+mask.png" />
+        <image file="BLACK_HITTER+walk+mask.png" cols = "3" rows = "4" />
     </atlas>
 </resources>
