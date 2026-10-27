@@ -30,9 +30,11 @@ var Constructor = function()
         return "icon_load";
     };
 
-    this.isFinalStep = function(action)
+    this.isFinalStep = function(action, map)
     {
-        if (action.getStepInputType() === 'FIELD')
+        // the engine has written the picked field after step 0;
+        // only then is this single-step action complete
+        if (action.getInputStep() === 1)
         {
             return true;
         }
