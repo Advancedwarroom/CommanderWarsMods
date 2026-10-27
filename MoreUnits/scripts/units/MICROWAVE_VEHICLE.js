@@ -33,6 +33,7 @@ var Constructor = function()
     {
         return 14000;
     };
+    this.actionList = ["ACTION_MU_ENERGIZE"];
     this.getName = function()
     {
         return qsTr("Microwave Vehicle");

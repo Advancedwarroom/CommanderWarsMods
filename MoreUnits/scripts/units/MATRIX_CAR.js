@@ -34,6 +34,7 @@ var Constructor = function()
     {
         return 16000;
     };
+    this.actionList = ["ACTION_MU_EMP"];
     this.getName = function()
     {
         return qsTr("Matrix Car");

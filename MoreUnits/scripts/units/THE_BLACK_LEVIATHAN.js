@@ -36,6 +36,7 @@ var Constructor = function()
     {
         return 20000;
     };
+    this.actionList = ["ACTION_MU_DEVOUR"];
     this.getName = function()
     {
         return qsTr("The Black Leviathan");

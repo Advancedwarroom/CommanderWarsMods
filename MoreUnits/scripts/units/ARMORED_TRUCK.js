@@ -31,6 +31,7 @@ var Constructor = function()
     {
         return 12000;
     };
+    this.actionList = ["ACTION_MU_ARMOR"];
     this.getName = function()
     {
         return qsTr("Armored Truck");
